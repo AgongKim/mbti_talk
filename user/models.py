@@ -1,14 +1,13 @@
 
+from random import choices
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from user.managers import UserManager
+from mbti_talk.configs import DOMAIN_CHOICE,STATUS_CHOICE
 
 class User(AbstractUser):
-    DOMAIN_CHOICE = (
-        ('EM','email'),
-        ('GO','google'),
-        ('KA','kakao')
-    )
+
+    
     objects = UserManager()
     
     username = None
@@ -20,9 +19,10 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=100)
-    domain = models.CharField(max_length=2, choices=DOMAIN_CHOICE, default='EM')
+    domain = models.CharField(max_length=2, default='EM', choices=DOMAIN_CHOICE)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    status = models.IntegerField(default=0, choices=STATUS_CHOICE)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
