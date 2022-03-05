@@ -36,7 +36,7 @@ class UserUpdateAPI(APIView):
             if _data.get('email'):
                 raise CustomApiException(detail=get_msg('cant_change_email'))
             #validate data
-            
+
             u = request.user
             for attr, value in _data.items():
                 setattr(u, attr, value)
@@ -52,5 +52,6 @@ class UserDeleteAPI(APIView):
 
 
 class UserDetailAPI(APIView):
+    @auth_required   
     def get(self, request):
-        return JsonResponse({'status':200,'result':'test'})
+        return Response(UserSerializer(request.user).data)
