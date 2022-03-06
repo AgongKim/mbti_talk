@@ -66,13 +66,6 @@ class UserDetailAPI(APIView):
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
-class MailAuthAPI(APIView):
-    def post(self, request):
-        _data = json.loads(request.body)
-        user_email = _data.get('email')
-        from utils import email
-        email.send_mail('join_auth', [user_email], request.user)
-        return HttpResponse("테스트중")
 
 class UserEmailAuthAPI(APIView):
     def get(self, request, _encoded):
