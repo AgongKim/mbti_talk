@@ -6,6 +6,7 @@ api_user_urls = [
     path('delete/', views.UserDeleteAPI.as_view(), name='user_delete'),
     path('update/', views.UserUpdateAPI.as_view(), name='user_update'),
     path('detail/', views.UserDetailAPI.as_view(), name='user_detail'),
+    path('mail_auth/<str:_encoded>/', views.UserEmailAuthAPI.as_view(), name='user_email_auth'),
 ]
 
 urlpatterns = [

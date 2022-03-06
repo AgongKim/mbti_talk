@@ -1,5 +1,5 @@
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,21 +8,27 @@ from user.serializers import UserSerializer
 from utils.exception import CustomApiException, get_msg
 from django.contrib.auth.hashers import make_password
 from utils.decorators import auth_required
+from utils.encrypt import email_auth_user
+from django.core.exceptions import ObjectDoesNotExist
 
-# Create your views here.
 class UserCreateAPI(APIView):
     def post(self, request):
         try:
             _data = json.loads(request.body)
-            print(_data)
+            #validate data
             if not _data.get('password') or not _data.get('email'):
                 raise CustomApiException(detail=get_msg('parameter_missing'))
             if User.objects.filter(email=_data.get('email')).exists():
                 raise CustomApiException(detail="email_already_exists")
+
             pwd = _data.pop('password')
             pwd = make_password(pwd)
             _data['password'] = pwd
             u = User.objects.create(**_data)
+            # auth mail send
+            from utils import email
+            email.send_mail('join_auth', [u.email], request.user)
+
             return Response(UserSerializer(u).data)
         except TypeError:
             raise CustomApiException(detail="invalid_format")
@@ -33,9 +39,13 @@ class UserUpdateAPI(APIView):
     def post(self, request):
         try:
             _data = json.loads(request.body)
+            #validate data
             if _data.get('email'):
                 raise CustomApiException(detail=get_msg('cant_change_email'))
-            #validate data
+            if _data.get('password'):
+                pwd = _data.pop('password')
+                pwd = make_password(pwd)
+                _data['password'] = pwd
 
             u = request.user
             for attr, value in _data.items():
@@ -55,3 +65,21 @@ class UserDetailAPI(APIView):
     @auth_required   
     def get(self, request):
         return Response(UserSerializer(request.user).data)
+
+class MailAuthAPI(APIView):
+    def post(self, request):
+        _data = json.loads(request.body)
+        user_email = _data.get('email')
+        from utils import email
+        email.send_mail('join_auth', [user_email], request.user)
+        return HttpResponse("테스트중")
+
+class UserEmailAuthAPI(APIView):
+    def get(self, request, _encoded):
+        try:
+            user = email_auth_user(_encoded)
+        except ObjectDoesNotExist:
+            raise CustomApiException(detail="email_not_exists")
+        user.status = 1
+        user.save()
+        return Response(UserSerializer(user).data)

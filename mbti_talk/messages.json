@@ -5,5 +5,6 @@
     "email_already_exists" : "이미 존재하는 이메일입니다.",
     "auth_failed" : "인증에 실패했습니다.",
     "cant_change_email" : "이메일은 바꿀 수 없습니다.",
-    "status_abnormal" : "이용할 수 없는 상태입니다."
+    "status_abnormal" : "이용할 수 없는 상태입니다.",
+    "email_not_exists" : "존재하지 않는 이메일입니다."
 }

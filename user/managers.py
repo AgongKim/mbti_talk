@@ -17,5 +17,4 @@ class UserManager(BaseUserManager):
         return self.get(email=user.email)
 
     def authenticate(self, user, password):
-        # XXX: `user.user`
-        return user.user.check_password(password)
+        return user.check_password(password)
