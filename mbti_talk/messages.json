@@ -6,5 +6,7 @@
     "auth_failed" : "인증에 실패했습니다.",
     "cant_change_email" : "이메일은 바꿀 수 없습니다.",
     "status_abnormal" : "이용할 수 없는 상태입니다.",
-    "email_not_exists" : "존재하지 않는 이메일입니다."
+    "email_not_exists" : "존재하지 않는 이메일입니다.",
+    "duplicate_field" : "중복된 필드가 존재합니다.",
+    "abnormal_status" : "이용 가능한 상태가 아닙니다."
 }

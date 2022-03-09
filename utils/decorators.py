@@ -1,5 +1,5 @@
 import functools
-from utils.exception import CustomApiException, get_msg
+from utils.exception import FailResponse, get_msg
 from user.models import User
 
 def auth_required(f):
@@ -15,9 +15,9 @@ def auth_required(f):
             user = User.objects.filter(email=debug_email).first()
             request.user = user
         if not request.user.is_authenticated:
-            raise CustomApiException(detail=get_msg("auth_failed"))
+            return FailResponse(get_msg("auth_failed"))
         if request.user.status != 1:
-            raise CustomApiException(detail=get_msg("status_abnormal"))
+            return FailResponse(get_msg("abnormal_status"))
         
         
         return f(self, request, *args, **kwargs)

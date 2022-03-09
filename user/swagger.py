@@ -1,6 +1,17 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
+def Response_with_example(data):
+    res = openapi.Response(
+            examples={
+                "application/json": {
+                    "gcode": 0,
+                    "success": True,
+                    "data" : data
+                }
+            }
+        )
+    return res
 
 class UserCreateSwagger:
     params = {
@@ -12,25 +23,38 @@ class UserCreateSwagger:
     req = openapi.Schema(type=openapi.TYPE_OBJECT, properties=params)
 
     res = {
-        "201": openapi.Response(
-            description="가입 성공",
-            examples={
-                "application/json": {
-                    "gcode": 0,
-                    "success": True,
-                }
-            },
-        ),
-        "400": openapi.Response(
-            description="부적절한 형태의 파라미터",
-            examples={
-                "application/json": {
-                    "gcode": 9000,
-                    "msg": "INVALID_FORMAT",
-                    "success": False,
-                }
-            },
-        ),
+        "200": Response_with_example('<userdata>')
     }
 
-swagger_user_create = swagger_auto_schema(request_body=UserCreateSwagger.req, responses=UserCreateSwagger.res)
+class UserUpdateSwagger:
+    params = {
+        "password": openapi.Schema(type=openapi.TYPE_STRING, description='user_password'),
+        "nickname": openapi.Schema(type=openapi.TYPE_STRING, description='user_nickname'),
+    }
+    req = openapi.Schema(type=openapi.TYPE_OBJECT, properties=params)
+
+    res = {
+        "200": Response_with_example('<userdata>')
+    }
+
+class UserDetailSwagger: 
+    res = {
+        "200": Response_with_example('<userdata>')
+    }
+
+class UserDeleteSwagger:
+    params = {}
+    req = openapi.Schema(type=openapi.TYPE_OBJECT, properties=params)
+    res = {
+        "200": Response_with_example("none")
+    }
+
+class EmailAuthSwagger:
+    res = {
+        "200": Response_with_example("<userdata>")
+    }
+swagger_user_create = swagger_auto_schema(operation_summary='유저 회원가입 api', request_body=UserCreateSwagger.req, responses=UserCreateSwagger.res)
+swagger_user_update = swagger_auto_schema(operation_summary='[유저트큰 필요] 유저 정보수정 api', request_body=UserUpdateSwagger.req, responses=UserUpdateSwagger.res)
+swagger_user_detail = swagger_auto_schema(operation_summary="[유저토큰 필요] 유저 정보조회 api", responses=UserDetailSwagger.res)
+swagger_user_delete = swagger_auto_schema(operation_summary="[유저토큰 필요] 유저 inactive하게 만듬", request_body=UserDeleteSwagger.req, responses=UserDeleteSwagger.res)
+swagger_email_auth = swagger_auto_schema(operation_summary="유저 이메일 인증 status를 1로", responses=EmailAuthSwagger.res)

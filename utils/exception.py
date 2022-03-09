@@ -1,8 +1,21 @@
-from rest_framework.exceptions import APIException
+from django.http import JsonResponse
 from utils.messages import get_msg
 
-class CustomApiException(APIException):
-    def __init__(self, **kwargs):
-        self.status_code = kwargs.get("status", 400)
-        self.gcode = kwargs.get("gcode", 9000)
-        self.detail = kwargs.get("detail", "알 수 없는 오류가 발생했습니다.")
+
+class FailResponse(JsonResponse):
+    def __init__(self, msg):
+        res = {
+            "status" : "500",
+            "gcode" : "9000",
+            "detail" : msg
+        }
+        super().__init__(res,status=500)
+
+class SuccessResponse(JsonResponse):
+    def __init__(self, data={}):
+        res = {
+            "status" : 200,
+            "gcode" : "0",
+            "data" : data
+        }
+        super().__init__(res,status=200)

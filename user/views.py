@@ -5,14 +5,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from user.models import User
 from user.serializers import UserSerializer
-from utils.exception import CustomApiException, get_msg
+from utils.exception import FailResponse, SuccessResponse, get_msg
 from django.contrib.auth.hashers import make_password
 from utils.decorators import auth_required
 from utils.encrypt import email_auth_user
 from django.core.exceptions import ObjectDoesNotExist
-from user.swagger import (
-    swagger_user_create,
-)
+from user.swagger import *
+from django.db.models import Q
 
 class UserCreateAPI(APIView):
     swagger_tags = ['users']
@@ -23,61 +22,77 @@ class UserCreateAPI(APIView):
             _data = json.loads(request.body)
             #validate data
             if not _data.get('password') or not _data.get('email'):
-                raise CustomApiException(detail=get_msg('parameter_missing'))
-            if User.objects.filter(email=_data.get('email')).exists():
-                raise CustomApiException(detail="email_already_exists")
-
-            pwd = _data.pop('password')
-            pwd = make_password(pwd)
-            _data['password'] = pwd
+                return FailResponse(get_msg("parameter_missing"))
+            if User.objects.filter(Q(email=_data['email'] | Q(nickname=_data['nickname']))).exists():
+                return FailResponse(get_msg("duplicate_field"))
+            
+            _data['password'] = make_password(_data['password'])
             u = User.objects.create(**_data)
             # auth mail send
             from utils import email
-            email.send_mail('join_auth', [u.email], request.user)
+            email.send_mail('join_auth', [u.email], u)
+            return SuccessResponse(UserSerializer(u).data)
 
-            return Response(UserSerializer(u).data)
-        except:
-            raise CustomApiException(detail='INVALID_FORMAT')
+        except Exception as e:
+            print(e)
+            return FailResponse(get_msg("invalid_format"))
 
 class UserUpdateAPI(APIView):
+    swagger_tags = ['users']
+
     @auth_required
+    @swagger_user_update
     def post(self, request):
         try:
             _data = json.loads(request.body)
             #validate data
             if _data.get('email'):
-                raise CustomApiException(detail=get_msg('cant_change_email'))
+                return FailResponse(get_msg('cant_change_email'))
             if _data.get('password'):
-                pwd = _data.pop('password')
-                pwd = make_password(pwd)
-                _data['password'] = pwd
+                _data['password'] = make_password(_data['password'])
 
             u = request.user
-            for attr, value in _data.items():
-                setattr(u, attr, value)
-                u.save()
-            return Response(UserSerializer(u).data)
+            if _data['password']:
+                u.password = _data['password']
+            elif _data['nickname']:
+                u.nickname = _data['nickname']
+            u.save()
+
+            return SuccessResponse(UserSerializer(u).data)
         except:
-            raise CustomApiException(detail='INVALID_FORMAT')
+            return FailResponse(get_msg("invalid_format"))
 
 
 class UserDeleteAPI(APIView):
-    def get(self, request):
-        return JsonResponse({'status':200,'result':'test'})
+    swagger_tags = ['users']
+
+    @auth_required
+    @swagger_user_delete
+    def post(self, request):
+        user = request.user
+        user.status = 999
+        user.save()
+        return SuccessResponse()
 
 
 class UserDetailAPI(APIView):
-    @auth_required   
+    swagger_tags = ['users']
+
+    @auth_required
+    @swagger_user_detail
     def get(self, request):
-        return Response(UserSerializer(request.user).data)
+        return SuccessResponse(UserSerializer(request.user).data)
 
 
 class UserEmailAuthAPI(APIView):
+    swagger_tags = ['users']
+    
+    @swagger_email_auth
     def get(self, request, _encoded):
         try:
             user = email_auth_user(_encoded)
         except ObjectDoesNotExist:
-            raise CustomApiException(detail="email_not_exists")
+            return FailResponse(get_msg("email_not_exists"))
         user.status = 1
         user.save()
-        return Response(UserSerializer(user).data)
+        return SuccessResponse(UserSerializer(user).data)

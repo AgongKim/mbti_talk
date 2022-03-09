@@ -18,7 +18,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     email = models.EmailField(unique=True)
-    nickname = models.CharField(max_length=100)
+    nickname = models.CharField(max_length=100, unique=True)
     domain = models.CharField(max_length=2, default='EM', choices=DOMAIN_CHOICE)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
