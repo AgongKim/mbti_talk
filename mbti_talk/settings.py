@@ -90,8 +90,12 @@ WSGI_APPLICATION = 'mbti_talk.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'MBTIDB',
+        'USER':'mbtitalk',
+        'PASSWORD':'xogus3256',
+        'HOST':'192.168.219.200',
+        'PORT':'3306'
     }
 }
 
