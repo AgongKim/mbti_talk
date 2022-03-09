@@ -6,6 +6,10 @@ ENV PYTHONUNBUFFERED=1
 RUN python -m venv /app/env
 ENV PATH="/app/env/bin:$PATH"
 
+#for mysqlclient install
+RUN apt-get update
+RUN apt-get install -y gcc
+RUN apt-get install -y default-libmysqlclient-dev
 
 ## Install packages
 COPY requirements.txt .

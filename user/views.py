@@ -10,8 +10,14 @@ from django.contrib.auth.hashers import make_password
 from utils.decorators import auth_required
 from utils.encrypt import email_auth_user
 from django.core.exceptions import ObjectDoesNotExist
+from user.swagger import (
+    swagger_user_create,
+)
 
 class UserCreateAPI(APIView):
+    swagger_tags = ['users']
+
+    @swagger_user_create
     def post(self, request):
         try:
             _data = json.loads(request.body)
@@ -30,10 +36,8 @@ class UserCreateAPI(APIView):
             email.send_mail('join_auth', [u.email], request.user)
 
             return Response(UserSerializer(u).data)
-        except TypeError:
-            raise CustomApiException(detail="invalid_format")
         except:
-            raise CustomApiException(detail='invalid_request')
+            raise CustomApiException(detail='INVALID_FORMAT')
 
 class UserUpdateAPI(APIView):
     @auth_required
@@ -53,10 +57,8 @@ class UserUpdateAPI(APIView):
                 setattr(u, attr, value)
                 u.save()
             return Response(UserSerializer(u).data)
-        except TypeError:
-            raise CustomApiException(detail="invalid_format")
         except:
-            raise CustomApiException(detail='invalid_request')
+            raise CustomApiException(detail='INVALID_FORMAT')
 
 
 class UserDeleteAPI(APIView):
