@@ -32,7 +32,8 @@ class UserCreateAPI(APIView):
             return Response(UserSerializer(u).data)
         except TypeError:
             raise CustomApiException(detail="invalid_format")
-
+        except:
+            raise CustomApiException(detail='invalid_request')
 
 class UserUpdateAPI(APIView):
     @auth_required
@@ -54,6 +55,8 @@ class UserUpdateAPI(APIView):
             return Response(UserSerializer(u).data)
         except TypeError:
             raise CustomApiException(detail="invalid_format")
+        except:
+            raise CustomApiException(detail='invalid_request')
 
 
 class UserDeleteAPI(APIView):
