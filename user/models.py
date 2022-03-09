@@ -4,10 +4,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from user.managers import UserManager
 from mbti_talk.configs import DOMAIN_CHOICE,STATUS_CHOICE
+from mbti_talk.configs import MBTI_CHOICES
 
 class User(AbstractUser):
 
-    
     objects = UserManager()
     
     username = None
@@ -19,6 +19,7 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=100, unique=True)
+    mbti = models.CharField(max_length=10,choices=MBTI_CHOICES,null=False)
     domain = models.CharField(max_length=2, default='EM', choices=DOMAIN_CHOICE)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -26,7 +27,7 @@ class User(AbstractUser):
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(null=True)
+    last_login = models.DateTimeField(null=True,blank=True)
 
     class Meta:
         db_table = 'app_user'
@@ -34,3 +35,7 @@ class User(AbstractUser):
     
     def __str__(self):
         return self.email
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(User, self).save(*args, **kwargs)

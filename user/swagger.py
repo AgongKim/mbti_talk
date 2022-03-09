@@ -3,6 +3,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 def Response_with_example(data):
     res = openapi.Response(
+            description="성공",
             examples={
                 "application/json": {
                     "gcode": 0,
@@ -18,9 +19,10 @@ class UserCreateSwagger:
         "email": openapi.Schema(type=openapi.TYPE_STRING, description='user_email'),
         "password": openapi.Schema(type=openapi.TYPE_STRING, description='user_password'),
         "nickname": openapi.Schema(type=openapi.TYPE_STRING, description='user_nickname'),
+        "mbti": openapi.Schema(type=openapi.TYPE_STRING, description='user_mbti(ALL_IN_UPPER_CASE)')
     }
 
-    req = openapi.Schema(type=openapi.TYPE_OBJECT, properties=params)
+    req = openapi.Schema(type=openapi.TYPE_OBJECT, properties=params,required=["email", "password", "mbti"])
 
     res = {
         "200": Response_with_example('<userdata>')
@@ -30,6 +32,7 @@ class UserUpdateSwagger:
     params = {
         "password": openapi.Schema(type=openapi.TYPE_STRING, description='user_password'),
         "nickname": openapi.Schema(type=openapi.TYPE_STRING, description='user_nickname'),
+        "mbti": openapi.Schema(type=openapi.TYPE_STRING, description='user_mbti')
     }
     req = openapi.Schema(type=openapi.TYPE_OBJECT, properties=params)
 

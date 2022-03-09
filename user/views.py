@@ -21,9 +21,9 @@ class UserCreateAPI(APIView):
         try:
             _data = json.loads(request.body)
             #validate data
-            if not _data.get('password') or not _data.get('email'):
+            if not _data.get('password') or not _data.get('email') or not _data.get('mbti'):
                 return FailResponse(get_msg("parameter_missing"))
-            if User.objects.filter(Q(email=_data['email'] | Q(nickname=_data['nickname']))).exists():
+            if User.objects.filter(Q(email=_data['email']) | Q(nickname=_data['nickname'])).exists():
                 return FailResponse(get_msg("duplicate_field"))
             
             _data['password'] = make_password(_data['password'])

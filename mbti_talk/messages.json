@@ -8,5 +8,8 @@
     "status_abnormal" : "이용할 수 없는 상태입니다.",
     "email_not_exists" : "존재하지 않는 이메일입니다.",
     "duplicate_field" : "중복된 필드가 존재합니다.",
-    "abnormal_status" : "이용 가능한 상태가 아닙니다."
+    "abnormal_status" : "이용 가능한 상태가 아닙니다.",
+    "invalid_category" : "접근 권합이 없습니다.",
+    "no_hits_control" : "조회수는 바꿀 수 없습니다."
 }
+

@@ -8,6 +8,7 @@ class UserManager(BaseUserManager):
         email = self.normailize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
+        user.full_clean()
         user.save()
 
         return user
