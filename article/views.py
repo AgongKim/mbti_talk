@@ -13,8 +13,9 @@ from django.core.paginator import Paginator
 class ArticleCreateAPI(APIView):
     swagger_tags = ['article']
 
-    @swagger_article_create
+    
     @auth_required
+    @swagger_article_create
     def post(self, request):
         try:
             _data = json.loads(request.body)
@@ -38,8 +39,9 @@ class ArticleCreateAPI(APIView):
 class ArticleListAPI(APIView):
     swagger_tags = ['article']
 
-    @swagger_article_list
+
     @auth_required
+    @swagger_article_list
     def get(self, request, category):
         offset = request.GET.get('offset', 1)
         limit = request.GET.get('limit', 20)
