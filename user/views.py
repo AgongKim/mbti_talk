@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from user.models import User
 from user.serializers import UserSerializer
-from utils.exception import FailResponse, SuccessResponse, get_msg
+from utils.responses import FailResponse, SuccessResponse, get_msg
 from django.contrib.auth.hashers import make_password
 from utils.decorators import auth_required
 from utils.encrypt import email_auth_user
@@ -71,6 +71,7 @@ class UserDeleteAPI(APIView):
     def post(self, request):
         user = request.user
         user.status = 999
+        user.is_active = False
         user.save()
         return SuccessResponse()
 

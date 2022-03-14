@@ -1,5 +1,5 @@
 import functools
-from utils.exception import FailResponse, get_msg
+from utils.responses import FailResponse, get_msg
 from user.models import User
 
 def auth_required(f):

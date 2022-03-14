@@ -2,7 +2,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
-from utils.exception import FailResponse, SuccessResponse, get_msg
+from utils.responses import FailResponse, SuccessResponse, get_msg
 from utils.decorators import auth_required
 from mbti_talk.configs import MBTI_LIST
 from article.models import Article
@@ -60,3 +60,16 @@ class ArticleListAPI(APIView):
         result['data'] = ArticleSerializer(cutoff_list, many=True).data
         
         return JsonResponse(result)
+
+class ArticleLikeAPI(APIView):
+    swagger_tags = ['article']
+
+    @auth_required
+    def post(self, request):
+        try:
+            _data = json.loads(request.body)
+            article_id = _data.get('article_id')
+             
+        except Exception as e:
+            print(e)
+            return FailResponse(get_msg("invalid_format"))

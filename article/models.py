@@ -35,7 +35,7 @@ class Comment(models.Model):
 
     class Meta:
         db_table = 'app_comment'
-        app_label = 'comment'
+        app_label = 'article'
     
     def __str__(self):
         return self.contents
@@ -43,3 +43,14 @@ class Comment(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super(User, self).save(*args, **kwargs)
+
+class ArticleLike(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'app_article_like'
+        app_label = 'article'
+
