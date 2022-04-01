@@ -162,3 +162,12 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Token',),
 }
 
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+        'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
+}

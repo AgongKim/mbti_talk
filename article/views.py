@@ -50,7 +50,7 @@ class ArticleListAPI(APIView):
         cutoff_list = paginator.get_page(offset)
 
         total_count = total_list.count()
-        count = cutoff_list.count()
+        count = len(cutoff_list)
         
         result = {}
         result['status'] = 200
