@@ -29,8 +29,13 @@ class UserCreateAPI(APIView):
             _data['password'] = make_password(_data['password'])
             u = User.objects.create(**_data)
             # auth mail send
-            from utils import email
-            email.send_mail('join_auth', [u.email], u)
+            def send_signup_email():
+                from utils import email
+                email.send_mail('join_auth', [u.email], u)
+            import threading
+            t = threading.Thread(target=send_signup_email)
+            t.start()
+            
             return SuccessResponse(UserSerializer(u).data)
 
         except Exception as e:
