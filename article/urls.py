@@ -2,9 +2,9 @@ from django.urls import path, include
 from article import views
 
 api_article_urls = [
-    path('create/', views.ArticleCreateAPI.as_view(),name='article_create'),
-    path('list/<str:category>/', views.ArticleListAPI.as_view(),name="article_list"),
-
+    path('create/', views.ArticleCreateAPI.as_view(), name='article_create'),
+    path('list/<str:category>/', views.ArticleListAPI.as_view(), name="article_list"),
+    path('categories/', views.ArticleCategoriesAPI.as_view(), name='article_categories'),
 ]
 
 urlpatterns = [

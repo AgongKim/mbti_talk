@@ -61,6 +61,19 @@ class ArticleListAPI(APIView):
         
         return JsonResponse(result)
 
+class ArticleCategoriesAPI(APIView):
+    swagger_tags = ['category']
+    
+    def get(self,request):
+        from mbti_talk.configs import BOARD_CATEGORIES
+        data = [i[0] for i in BOARD_CATEGORIES]
+        result = {}
+        result['status'] = 200
+        result['gcode'] = 0
+        result['data'] = data
+        return JsonResponse(result)
+    
+
 class ArticleLikeAPI(APIView):
     swagger_tags = ['article']
 
