@@ -24,7 +24,7 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        super(User, self).save(*args, **kwargs)
+        super(Article, self).save(*args, **kwargs)
 
 class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)

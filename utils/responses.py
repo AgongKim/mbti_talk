@@ -9,7 +9,7 @@ class FailResponse(JsonResponse):
             "gcode" : "9000",
             "detail" : msg
         }
-        super().__init__(res,status=500)
+        super(FailResponse, self).__init__(res,status=500)
 
 class SuccessResponse(JsonResponse):
     def __init__(self, data={}):
@@ -18,4 +18,4 @@ class SuccessResponse(JsonResponse):
             "gcode" : "0",
             "data" : data
         }
-        super().__init__(res,status=200)
+        super(SuccessResponse, self).__init__(res,status=200)
