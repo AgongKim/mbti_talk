@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from utils.responses import FailResponse, SuccessResponse, get_msg
 from utils.decorators import auth_required
 from mbti_talk.configs import MBTI_LIST
-from article.models import Article
-from article.serializers import ArticleSerializer
+from article.models import Article, Comment
+from article.serializers import ArticleSerializer,CommentSerializer
 from article.swagger import *
 from django.core.paginator import Paginator
 
@@ -61,6 +61,23 @@ class ArticleListAPI(APIView):
         
         return JsonResponse(result)
 
+class ArticleDetailAPI(APIView):
+    swagger_tags = ['article']
+    def get(self, request, article_id):
+        try:
+            article = Article.objects.get(id=article_id)
+            comment = Comment.objects.filter(article_id=article_id)
+            result = {}
+            result['status'] = 200
+            result['gcode'] = 0
+            data = ArticleSerializer(article, many=False).data
+            data['comment'] = CommentSerializer(comment, many=True).data
+            result['data'] = data
+            return JsonResponse(result)
+        except Exception as e:
+            print(e)
+            return FailResponse(get_msg("invalid_format")) 
+
 class ArticleCategoriesAPI(APIView):
     swagger_tags = ['category']
     
@@ -83,6 +100,23 @@ class ArticleLikeAPI(APIView):
             _data = json.loads(request.body)
             article_id = _data.get('article_id')
              
+        except Exception as e:
+            print(e)
+            return FailResponse(get_msg("invalid_format"))
+
+class CommentCreateAPI(APIView):
+    swagger_tags = ['comment']
+
+    @auth_required
+    @swagger_comment_create
+    def post(self, request):
+        try:
+            _data = json.loads(request.body)
+            if not _data.get('article_id'):
+                return FailResponse(get_msg("parameter_missing"))
+            _data["author"] = request.user 
+            comment = Comment.objects.create(**_data)
+            return SuccessResponse(CommentSerializer(comment).data)
         except Exception as e:
             print(e)
             return FailResponse(get_msg("invalid_format"))

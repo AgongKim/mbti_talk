@@ -14,6 +14,7 @@ class Article(models.Model):
     hits = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_viewable = models.CharField(max_length=10)
 
     class Meta:
         db_table = 'app_article'
@@ -42,7 +43,7 @@ class Comment(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        super(User, self).save(*args, **kwargs)
+        super(Comment, self).save(*args, **kwargs)
 
 class ArticleLike(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)

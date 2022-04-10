@@ -156,6 +156,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
 }
 
 SIMPLE_JWT = {
@@ -171,6 +172,11 @@ SWAGGER_SETTINGS = {
         'Token': {
             'type': 'apiKey',
             'name': 'Authorization',
+            'in': 'header'
+        },
+        'DEBUG_AUTH': {
+            'type': 'apiKey',
+            'name': 'DEBUG-USERID',
             'in': 'header'
         }
     }
