@@ -14,7 +14,7 @@ class Article(models.Model):
     hits = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_viewable = models.CharField(max_length=10)
+    is_viewable = models.CharField(max_length=10, default='Y')
 
     class Meta:
         db_table = 'app_article'

@@ -42,7 +42,8 @@ BOARD_CATEGORIES = [
     ('ISTP', 'ISTP'),
     ('ISTJ', 'ISTJ'),
     ('ISFP', 'ISFP'),
-    ('ISFJ', 'ISFJ')
+    ('ISFJ', 'ISFJ'),
+    ('FREE', 'FREE'),
 ]
 MBTI_LIST = [
     'ENTP',

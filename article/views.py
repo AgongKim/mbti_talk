@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from utils.responses import FailResponse, SuccessResponse, get_msg
 from utils.decorators import auth_required
-from mbti_talk.configs import MBTI_LIST
+from mbti_talk.configs import MBTI_LIST, BOARD_CATEGORIES
 from article.models import Article, Comment
 from article.serializers import ArticleSerializer,CommentSerializer
 from article.swagger import *
@@ -21,7 +21,8 @@ class ArticleCreateAPI(APIView):
             _data = json.loads(request.body)
             if not _data.get('category') or not _data.get('title'):
                 return FailResponse(get_msg("parameter_missing"))
-            if _data.get('category') not in MBTI_LIST or \
+            if ( _data.get('category') not in MBTI_LIST and \
+                    _data.get('category') != 'FREE' ) or \
                     ( _data.get('category') in MBTI_LIST and \
                         _data.get('category') != request.user.mbti ):
                 return FailResponse(get_msg("invalid_category"))

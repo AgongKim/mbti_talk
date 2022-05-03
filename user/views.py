@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from user.models import User
 from user.serializers import UserSerializer
 from utils.responses import FailResponse, SuccessResponse, get_msg
@@ -63,7 +64,10 @@ class UserUpdateAPI(APIView):
                 u.nickname = _data['nickname']
             u.save()
 
-            return SuccessResponse(UserSerializer(u).data)
+            data = {}
+            data['user'] = UserSerializer(u).data
+            data['token'] = TokenObtainPairSerializer.get_token(u)
+            return SuccessResponse(data)
         except:
             return FailResponse(get_msg("invalid_format"))
 
